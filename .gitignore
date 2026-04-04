@@ -35,9 +35,7 @@ htmlcov/
 .DS_Store
 Thumbs.db
 
-# Temp / output files
-*.txt
-!requirements.txt
+# Temp / output files (list explicitly — do NOT use *.txt globally)
 install_out.txt
 test_out.txt
 test_output.txt
@@ -45,6 +43,12 @@ test_output_utf8.txt
 test_results.txt
 test_results_new.txt
 pytest_final.txt
+
+# Helper scripts not part of the library
+run_tests.py
+run_pytest.py
+git_check.py
+run_check.py
 
 # Installed package info
 src/neurosim.egg-info/
