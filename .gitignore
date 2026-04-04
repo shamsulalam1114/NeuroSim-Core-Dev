@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.so
+
+# Virtual environments
+.venv/
+venv/
+env/
+.env
+
+# Pytest / testing
+.pytest_cache/
+.coverage
+htmlcov/
+*.xml
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp / output files
+*.txt
+!requirements.txt
+install_out.txt
+test_out.txt
+test_output.txt
+test_output_utf8.txt
+test_results.txt
+test_results_new.txt
+pytest_final.txt
+
+# Installed package info
+src/neurosim.egg-info/
