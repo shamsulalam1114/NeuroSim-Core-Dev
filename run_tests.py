@@ -63,7 +63,7 @@ check("connectivity: mvar_solver ridge is stable", t3)
 check("connectivity: raises ValueError on NaN input", t4)
 check("connectivity: raises on system=None", t5)
 
-# ── Control ───────────────────────────────────────────────────────────────────
+
 from neurosim.control.gramian import compute_gramian
 from neurosim.control.energy import minimum_energy, optimal_control_path
 from neurosim.control.metrics import modal_controllability, average_controllability, rank_facilitator_nodes
@@ -130,7 +130,7 @@ check("control: average_controllability positive for stable system", t12)
 check("control: rank_facilitator_nodes descending order", t13)
 check("control: optimal_control_path shapes correct", t14)
 
-# ── Harmonization ─────────────────────────────────────────────────────────────
+
 from neurosim.harmonization.combat import fit_combat, apply_combat, blind_harmonize
 
 hc_data = rng.standard_normal((100, 80))
@@ -156,7 +156,7 @@ def t17():
     h, params = blind_harmonize(hc_data, hc_labels, clinical_data, clinical_labels)
     orig_mean = np.abs(np.mean(clinical_data))
     harm_mean = np.abs(np.mean(h))
-    assert harm_mean < orig_mean + 2.0  # harmonized mean should be near grand mean
+    assert harm_mean < orig_mean + 2.0 
 
 def t18():
     params = fit_combat(hc_data, hc_labels)
@@ -180,7 +180,7 @@ check("harmonization: blind_harmonize end-to-end", t17)
 check("harmonization: raises on unseen scanner", t18)
 check("harmonization: raises on feature mismatch", t19)
 
-# ── Summary ───────────────────────────────────────────────────────────────────
+
 passed = sum(1 for r in results if r.strip().startswith("PASS"))
 failed = sum(1 for r in results if r.strip().startswith("FAIL"))
 total  = passed + failed

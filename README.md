@@ -17,7 +17,7 @@
 
 ---
 
-## 📐 Architecture
+
 
 ```
 neurosim/
@@ -36,7 +36,6 @@ The three-module design directly maps to the NeuroSim proposal phases:
 
 ---
 
-## 🚀 Installation
 
 ```bash
 git clone https://github.com/shamsulalam1114/NeuroSim-Core-Dev.git
@@ -54,16 +53,16 @@ pip install -e ".[dev]"
 import numpy as np
 from neurosim.harmonization import blind_harmonize
 
-# HCP healthy controls — 100 features, 80 subjects across 2 scanners
+
 hc_data = np.random.randn(100, 80)
 hc_labels = ['HCP_3T'] * 40 + ['HCP_7T'] * 40
 
-# ADNI clinical cohort — same features, 50 patients from a third scanner
+
 clinical_data = np.random.randn(100, 50)
 clinical_labels = ['ADNI_Siemens'] * 50
 
 harmonized, params = blind_harmonize(hc_data, hc_labels, clinical_data, clinical_labels)
-print(f"Harmonized shape: {harmonized.shape}")  # (100, 50)
+print(f"Harmonized shape: {harmonized.shape}")  
 ```
 
 ### 2. Estimate a stable directed A matrix (Dr. Agarwal's Challenge)
@@ -71,15 +70,15 @@ print(f"Harmonized shape: {harmonized.shape}")  # (100, 50)
 ```python
 from neurosim.connectivity import spectral_inversion_solver, check_schur_stability
 
-# Functional connectivity from e.g. Nilearn partial correlations
+
 fc_matrix = np.corrcoef(harmonized)
 
-# Solve for directed A — guaranteed Schur-stable
+
 A, info = spectral_inversion_solver(fc_matrix, alpha=0.1, system='discrete')
 is_stable, sr = check_schur_stability(A)
 
-print(f"Spectral radius: {sr:.4f}")  # Must be < 1.0
-print(f"System stable: {is_stable}")  # True
+print(f"Spectral radius: {sr:.4f}") 
+print(f"System stable: {is_stable}") 
 print(f"Condition number: {info['condition_number']:.2f}")
 ```
 
@@ -90,11 +89,11 @@ from neurosim.connectivity import normalize_matrix
 from neurosim.control.energy import minimum_energy
 
 A_norm = normalize_matrix(A, system='discrete')
-B = np.eye(A_norm.shape[0])  # full control
+B = np.eye(A_norm.shape[0])  
 
-# Define brain state vectors (e.g., from parcellation atlas)
-x0 = np.zeros(100); x0[:50] = 1.0   # initial state (e.g., healthy centroid)
-xf = np.zeros(100); xf[50:] = 1.0   # target state  (e.g., epileptic interictal)
+
+x0 = np.zeros(100); x0[:50] = 1.0   
+xf = np.zeros(100); xf[50:] = 1.0   
 
 E = minimum_energy(A_norm, T=3, B=B, x0=x0, xf=xf)
 print(f"Total transition energy: {E.sum():.4f}")
@@ -112,7 +111,7 @@ print(f"Modal controllability scores: {mc_scores}")
 
 ---
 
-## 🧪 Running Tests
+
 
 ```bash
 pytest tests/ -v --tb=short
@@ -125,7 +124,7 @@ Expected output: **All tests pass** across 3 test modules:
 
 ---
 
-## 📚 Key References
+
 
 - Parkes, L., et al. (2024). *A network control theory pipeline for studying the dynamics of the structural connectome.* Nature Protocols. https://doi.org/10.1038/s41596-024-00996-6
 - Gu, S., et al. (2015). *Controllability of structural brain networks.* Nature Communications. https://doi.org/10.1038/ncomms9414
@@ -133,7 +132,7 @@ Expected output: **All tests pass** across 3 test modules:
 
 ---
 
-## 📋 Proposal Timeline Progress
+
 
 | Phase | Status | Deliverable |
 |-------|--------|-------------|
@@ -149,6 +148,6 @@ Expected output: **All tests pass** across 3 test modules:
 
 ---
 
-## 📄 License
+
 
 Apache License 2.0 — see [LICENSE](LICENSE) for details.

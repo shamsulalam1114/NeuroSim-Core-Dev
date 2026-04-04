@@ -1,16 +1,4 @@
-"""
-Unit Tests — neurosim.control (gramian, energy, metrics)
 
-Tests validate:
-    1. Controllability Gramian is symmetric positive semi-definite.
-    2. Finite and infinite horizon Gramians are computed correctly.
-    3. Minimum energy is non-negative and finite.
-    4. Optimal control path returns correct shapes for pairwise transitions.
-    5. Modal controllability scores are real, non-negative, finite.
-    6. Average controllability returns correct shape.
-    7. rank_facilitator_nodes returns correct top_k results.
-    8. Wilson-Cowan-inspired determinism test on energy values.
-"""
 
 import numpy as np
 import pytest
@@ -20,9 +8,6 @@ from neurosim.control.energy import minimum_energy, optimal_control_path
 from neurosim.control.metrics import modal_controllability, average_controllability, rank_facilitator_nodes
 
 
-# ---------------------------------------------------------------------------
-# Fixtures
-# ---------------------------------------------------------------------------
 
 @pytest.fixture
 def rng():
@@ -47,9 +32,7 @@ def medium_system(rng):
     return A_norm, B
 
 
-# ---------------------------------------------------------------------------
-# Tests: compute_gramian
-# ---------------------------------------------------------------------------
+
 
 class TestComputeGramian:
 
@@ -64,14 +47,14 @@ class TestComputeGramian:
         assert np.allclose(Wc, Wc.T, atol=1e-8), "Gramian must be symmetric."
 
     def test_gramian_is_psd(self, stable_system):
-        """Gramian must be positive semi-definite (all eigenvalues >= 0)."""
+       
         A_norm, B = stable_system
         Wc = compute_gramian(A_norm, T=5, B=B, system="discrete")
         eigvals = np.linalg.eigvalsh(Wc)
         assert np.all(eigvals >= -1e-8), f"Gramian not PSD. Min eigenvalue: {eigvals.min():.4e}"
 
     def test_gramian_infinite_horizon_discrete(self, stable_system):
-        """Infinite horizon Gramian (Lyapunov solution) must be valid."""
+       
         A_norm, B = stable_system
         Wc = compute_gramian(A_norm, T=np.inf, B=B, system="discrete")
         assert Wc.shape == (10, 10)
@@ -88,15 +71,13 @@ class TestComputeGramian:
             compute_gramian(A_norm, T=5, B=B, system="foo")
 
     def test_gramian_defaults_to_identity_B(self, stable_system):
-        """When B=None, full identity control is assumed."""
+       
         A_norm, _ = stable_system
         Wc = compute_gramian(A_norm, T=5, system="discrete")
         assert Wc.shape == (10, 10)
 
 
-# ---------------------------------------------------------------------------
-# Tests: minimum_energy
-# ---------------------------------------------------------------------------
+
 
 class TestMinimumEnergy:
 
@@ -109,15 +90,15 @@ class TestMinimumEnergy:
         assert np.all(E >= 0), f"Found negative energy values: {E[E < 0]}"
 
     def test_energy_same_state_is_minimal(self, stable_system):
-        """Transitioning to the SAME state should require near-zero energy."""
+       
         A_norm, B = stable_system
         x0 = np.zeros(10); x0[:5] = 1.0
         E = minimum_energy(A_norm, T=3, B=B, x0=x0, xf=x0, system="discrete")
-        # Total energy should be very small (not necessarily exactly 0 due to dynamics).
+        
         assert np.sum(E) < 1.0, f"Self-transition energy too large: {np.sum(E):.4f}"
 
     def test_energy_output_shape(self, stable_system):
-        """Output energy vector must have length N."""
+       
         A_norm, B = stable_system
         x0 = np.zeros(10)
         xf = np.ones(10)
@@ -125,7 +106,7 @@ class TestMinimumEnergy:
         assert E.shape == (10,), f"Expected (10,) shape, got {E.shape}"
 
     def test_energy_accepts_boolean_states(self, stable_system):
-        """Boolean state arrays (nctpy style) must be handled correctly."""
+       
         A_norm, B = stable_system
         x0 = np.array([True, False] * 5)
         xf = np.array([False, True] * 5)
@@ -140,14 +121,12 @@ class TestMinimumEnergy:
             minimum_energy(A_norm, T=3, B=B, x0=x0, xf=xf)
 
 
-# ---------------------------------------------------------------------------
-# Tests: optimal_control_path
-# ---------------------------------------------------------------------------
+
 
 class TestOptimalControlPath:
 
     def test_output_shapes(self, medium_system):
-        """Energy matrix and total energy must have correct shapes."""
+       
         A_norm, B = medium_system
         n_nodes = 30
         n_transitions = 4
@@ -171,9 +150,6 @@ class TestOptimalControlPath:
         np.testing.assert_allclose(E_total, E_matrix.sum(axis=1), rtol=1e-10)
 
 
-# ---------------------------------------------------------------------------
-# Tests: modal_controllability
-# ---------------------------------------------------------------------------
 
 class TestModalControllability:
 
@@ -198,9 +174,6 @@ class TestModalControllability:
             modal_controllability(A)
 
 
-# ---------------------------------------------------------------------------
-# Tests: average_controllability
-# ---------------------------------------------------------------------------
 
 class TestAverageControllability:
 
@@ -221,9 +194,7 @@ class TestAverageControllability:
         assert np.all(ac > 0), "Expected positive AC for stable system."
 
 
-# ---------------------------------------------------------------------------
-# Tests: rank_facilitator_nodes
-# ---------------------------------------------------------------------------
+
 
 class TestRankFacilitatorNodes:
 
@@ -244,21 +215,12 @@ class TestRankFacilitatorNodes:
         assert len(np.unique(nodes)) == 5, "Top-k nodes must be unique."
 
 
-# ---------------------------------------------------------------------------
-# Wilson-Cowan Determinism Test
-# (Validates that energy computation is deterministic — same inputs → same output)
-# ---------------------------------------------------------------------------
 
 class TestWilsonCowanDeterminism:
-    """Inspired by Midterm Week 8 validation in the NeuroSim proposal.
 
-    We don't use a real Wilson-Cowan model here (that requires numerical ODE integration),
-    but we validate the mathematical determinism of the energy solver by checking that
-    repeat calls produce identical results.
-    """
 
     def test_minimum_energy_is_deterministic(self, stable_system):
-        """minimum_energy must return identical outputs for identical inputs."""
+       
         A_norm, B = stable_system
         x0 = np.array([1.0, 0.0] * 5)
         xf = np.array([0.0, 1.0] * 5)
@@ -269,7 +231,7 @@ class TestWilsonCowanDeterminism:
         np.testing.assert_array_equal(E1, E2, err_msg="Energy solver is not deterministic.")
 
     def test_spectral_inversion_is_deterministic(self):
-        """spectral_inversion_solver must produce identical A for identical FC."""
+       
         from neurosim.connectivity.solver import spectral_inversion_solver
         rng = np.random.default_rng(seed=99)
         fc = rng.standard_normal((15, 15))

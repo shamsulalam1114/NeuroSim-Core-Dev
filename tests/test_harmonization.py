@@ -1,22 +1,11 @@
-"""
-Unit Tests — neurosim.harmonization.combat
 
-Tests validate:
-    1. fit_combat runs on valid HC data and returns expected parameters.
-    2. apply_combat produces output of correct shape with no NaN/Inf.
-    3. blind_harmonize is end-to-end consistent.
-    4. Scanner effects are numerically reduced after harmonization.
-    5. All input validators raise correctly.
-"""
 
 import numpy as np
 import pytest
 from neurosim.harmonization.combat import fit_combat, apply_combat, blind_harmonize
 
 
-# ---------------------------------------------------------------------------
-# Fixtures
-# ---------------------------------------------------------------------------
+
 
 @pytest.fixture
 def rng():
@@ -28,9 +17,9 @@ def hc_dataset(rng):
     """Synthetic HC dataset with 2 scanners (site A: 40 subjects, site B: 40 subjects)."""
     n_features = 100
     n_subjects = 80
-    # Add artificial scanner effect to site B subjects.
+    
     data = rng.standard_normal((n_features, n_subjects))
-    data[:, 40:] += 2.0  # site B has a +2 offset across all features
+    data[:, 40:] += 2.0  
     labels = np.array(["scanner_A"] * 40 + ["scanner_B"] * 40)
     return data, labels
 
@@ -40,14 +29,12 @@ def clinical_dataset(rng):
     """Synthetic clinical dataset from scanner_A only."""
     n_features = 100
     n_subjects = 30
-    data = rng.standard_normal((n_features, n_subjects)) + 0.5  # slight mean shift
+    data = rng.standard_normal((n_features, n_subjects)) + 0.5  
     labels = np.array(["scanner_A"] * 30)
     return data, labels
 
 
-# ---------------------------------------------------------------------------
-# Tests: fit_combat
-# ---------------------------------------------------------------------------
+
 
 class TestFitCombat:
 
@@ -71,7 +58,7 @@ class TestFitCombat:
     def test_gamma_hat_shape(self, hc_dataset):
         data, labels = hc_dataset
         params = fit_combat(data, labels)
-        # gamma_hat: (n_batches=2, n_features=100)
+       
         assert params["gamma_hat"].shape == (2, 100)
 
     def test_delta_hat_all_positive(self, hc_dataset):
@@ -82,7 +69,7 @@ class TestFitCombat:
 
     def test_raises_on_mismatched_labels(self, rng):
         data = rng.standard_normal((50, 30))
-        labels = np.array(["A"] * 20)  # wrong length
+        labels = np.array(["A"] * 20) 
         with pytest.raises(ValueError, match="must match number of subjects"):
             fit_combat(data, labels)
 
@@ -100,9 +87,7 @@ class TestFitCombat:
             fit_combat(data, labels)
 
 
-# ---------------------------------------------------------------------------
-# Tests: apply_combat
-# ---------------------------------------------------------------------------
+
 
 class TestApplyCombat:
 
@@ -131,15 +116,13 @@ class TestApplyCombat:
     def test_raises_on_feature_mismatch(self, hc_dataset, rng):
         hc_data, hc_labels = hc_dataset
         params = fit_combat(hc_data, hc_labels)
-        wrong_data = rng.standard_normal((50, 10))  # 50 features != 100
+        wrong_data = rng.standard_normal((50, 10))  
         labels = np.array(["scanner_A"] * 10)
         with pytest.raises(ValueError, match="Feature mismatch"):
             apply_combat(wrong_data, labels, params)
 
 
-# ---------------------------------------------------------------------------
-# Tests: blind_harmonize
-# ---------------------------------------------------------------------------
+
 
 class TestBlindHarmonize:
 
@@ -160,19 +143,19 @@ class TestBlindHarmonize:
         n_features = 50
         n_per_site = 40
 
-        # Create strong scanner effect (site B has a known +5 offset).
+        
         data_A = rng.standard_normal((n_features, n_per_site))
         data_B = rng.standard_normal((n_features, n_per_site)) + 5.0
         hc_data = np.hstack([data_A, data_B])
         hc_labels = np.array(["A"] * n_per_site + ["B"] * n_per_site)
 
-        # Apply to another site-B dataset.
+       
         clinical_data = rng.standard_normal((n_features, 20)) + 5.0
         clinical_labels = np.array(["B"] * 20)
 
         harmonized, _ = blind_harmonize(hc_data, hc_labels, clinical_data, clinical_labels)
 
-        # Mean of harmonized data should be closer to 0 (grand mean) than original +5.
+       
         original_mean = np.mean(clinical_data)
         harmonized_mean = np.mean(harmonized)
         assert abs(harmonized_mean) < abs(original_mean), (
