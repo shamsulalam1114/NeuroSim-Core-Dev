@@ -19,7 +19,7 @@ def rng():
 
 @pytest.fixture
 def small_fc_matrix(rng):
-    """A small (20x20) symmetric positive-definite FC matrix."""
+    
     raw = rng.standard_normal((20, 20))
     fc = (raw @ raw.T) / 20
     np.fill_diagonal(fc, 1.0)
@@ -28,7 +28,7 @@ def small_fc_matrix(rng):
 
 @pytest.fixture
 def dense_fc_matrix(rng):
-    """A dense (200x200) FC matrix to test scalability."""
+   
     raw = rng.standard_normal((200, 200))
     fc = (raw @ raw.T) / 200
     np.fill_diagonal(fc, 1.0)
@@ -37,27 +37,27 @@ def dense_fc_matrix(rng):
 
 @pytest.fixture
 def small_timeseries(rng):
-    """A small (20 nodes, 500 TRs) BOLD time series."""
+    
     return rng.standard_normal((20, 500))
 
 
 @pytest.fixture
 def dense_timeseries(rng):
-    """A dense (200 nodes, 600 TRs) BOLD time series for high-resolution parcellation test."""
+    
     return rng.standard_normal((200, 600))
 
 
 class TestCheckSchurStability:
 
     def test_stable_matrix_returns_true(self, rng):
-        """A matrix with spectral radius < 1 should be stable."""
+        
         A = rng.standard_normal((10, 10)) * 0.05
         is_stable, sr = check_schur_stability(A)
         assert is_stable is True, f"Expected stable, got spectral radius={sr:.4f}"
         assert sr < 1.0
 
     def test_unstable_matrix_returns_false(self):
-        """A matrix with spectral radius > 1 should be unstable."""
+        
         A = np.eye(10) * 2.0 
         is_stable, sr = check_schur_stability(A)
         assert is_stable is False

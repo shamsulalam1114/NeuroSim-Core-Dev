@@ -16,7 +16,7 @@ def rng():
 
 @pytest.fixture
 def stable_system(rng):
-    """Small (10x10) stable system for fast tests."""
+    
     A = rng.standard_normal((10, 10)) * 0.05
     A_norm = normalize_matrix(A, system="discrete")
     B = np.eye(10)
@@ -25,7 +25,7 @@ def stable_system(rng):
 
 @pytest.fixture
 def medium_system(rng):
-    """Medium (30x30) system for energy and path tests."""
+    
     A = rng.standard_normal((30, 30)) * 0.05
     A_norm = normalize_matrix(A, system="discrete")
     B = np.eye(30)
@@ -82,7 +82,7 @@ class TestComputeGramian:
 class TestMinimumEnergy:
 
     def test_energy_is_nonnegative(self, stable_system):
-        """Control energy must be non-negative for all nodes."""
+        
         A_norm, B = stable_system
         x0 = np.zeros(10); x0[:5] = 1.0
         xf = np.zeros(10); xf[5:] = 1.0
@@ -140,7 +140,7 @@ class TestOptimalControlPath:
         assert E_total.shape == (n_transitions,)
 
     def test_total_energy_equals_row_sum(self, medium_system):
-        """total_energy[k] must equal E_matrix[k, :].sum() for all k."""
+       
         A_norm, B = medium_system
         n_nodes = 30
         x0_mat = np.random.randn(n_nodes, 3)
@@ -188,7 +188,7 @@ class TestAverageControllability:
         assert np.all(np.isfinite(ac))
 
     def test_all_positive_for_stable_system(self, stable_system):
-        """For a stable system, average controllability scores should be positive."""
+        
         A_norm, _ = stable_system
         ac = average_controllability(A_norm)
         assert np.all(ac > 0), "Expected positive AC for stable system."

@@ -14,7 +14,7 @@ with open("pytest_results.txt", "w", encoding="utf-8") as f:
     f.write(output)
     f.write(f"\nRETURN CODE: {result.returncode}\n")
 
-# Also print summary
+
 lines = output.splitlines()
 for line in lines:
     print(line)
