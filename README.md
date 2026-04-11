@@ -4,7 +4,7 @@
   <img src="https://img.shields.io/badge/GSoC-2026-orange?style=for-the-badge&logo=google" />
   <img src="https://img.shields.io/badge/INCF-Project%2039-005596?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Python-3.9%2B-blue?style=for-the-badge&logo=python" />
-  <img src="https://img.shields.io/badge/Tests-109%20passing-brightgreen?style=for-the-badge&logo=pytest" />
+  <img src="https://img.shields.io/badge/Tests-110%20passing-brightgreen?style=for-the-badge&logo=pytest" />
   <img src="https://img.shields.io/badge/License-Apache%202.0-green?style=for-the-badge" />
 </p>
 
@@ -15,7 +15,7 @@
 
 > **Mentor:** Dr. Khushbu Agarwal &nbsp;|&nbsp; **Author:** [Md. Shamsul Alam](https://github.com/shamsulalam1114) &nbsp;|&nbsp; **Timezone:** UTC+6 (Bangladesh)
 
-This repository is a fully working **Proof-of-Concept** for the NeuroSim proposal, demonstrating all three pipeline modules with **109 passing unit tests** and **4 executed Jupyter notebooks**. It directly addresses the two physics-constrained benchmark challenges raised during the INCF mentor review.
+This repository is a fully working **Proof-of-Concept** for the NeuroSim proposal, demonstrating all three pipeline modules with **110 passing unit tests** and **4 executed Jupyter notebooks**. It directly addresses the two physics-constrained benchmark challenges raised during the INCF mentor review.
 
 ---
 
@@ -203,7 +203,7 @@ pytest tests/ -v --tb=short -m "not slow"
 | `test_control.py`       | 26      | Gramian, energy, controllability, determinism      |
 | `test_granger.py`       | 24      | Granger F-test, causality detection, validators    |
 | `test_gramian_schur.py` | 23      | Schur Gramian, precision report, scaling benchmark |
-| **Total**               | **109** | **All passing ✅**                                 |
+| **Total**               | **110** | **All passing ✅**                                 |
 
 ---
 
@@ -232,14 +232,14 @@ All 4 notebooks have been executed end-to-end with saved outputs and plots:
 | **Schur Gramian + precision diagnostics**           | ✅ Complete | `control/gramian_schur.py` |
 | Minimum-energy state transition solver              | ✅ Complete | `control/energy.py`        |
 | Modal/Average Controllability + facilitator ranking | ✅ Complete | `control/metrics.py`       |
-| Unit test suite (109 tests)                         | ✅ Complete | `tests/`                   |
+| Unit test suite (110 tests)                         | ✅ Complete | `tests/`                   |
 | Executed Jupyter notebooks (×4)                     | ✅ Complete | `notebooks/`               |
 
 ---
 
 ## Key References
 
-- Parkes, L., et al. (2024). _A network control theory pipeline for studying the dynamics of the structural connectome._ **Nature Protocols**. https://doi.org/10.1038/s41596-024-00996-6
+- Parkes, L., et al. (2024). _A network control theory pipeline for studying the dynamics of the structural connectome._ **Nature Protocols**. https://doi.org/10.1038/s41596-024-01023-w
 - Gu, S., et al. (2015). _Controllability of structural brain networks._ **Nature Communications**. https://doi.org/10.1038/ncomms9414
 - Granger, C.W.J. (1969). _Investigating causal relations by econometric models and cross-spectral methods._ **Econometrica**, 37(3), 424–438.
 - Johnson, W.E., et al. (2007). _Adjusting batch effects in microarray expression data using empirical Bayes methods._ **Biostatistics**. https://doi.org/10.1093/biostatistics/kxj037
