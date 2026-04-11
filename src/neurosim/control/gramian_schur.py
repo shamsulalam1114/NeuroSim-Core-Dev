@@ -1,14 +1,11 @@
 """
 Schur Decomposition-Based Controllability Gramian for High-Resolution Clinical Datasets.
 
-This module directly addresses Dr. Agarwal's second benchmark challenge:
+This module provides a numerically stable implementation of the Controllability 
+Gramian designed specifically to scale for high-resolution clinical datasets 
+(such as ADNI or Epilepsy cohorts) without losing numerical precision.
 
-    "How does the implementation of the Controllability Gramian scale for
-     high-resolution clinical datasets (like ADNI or Epilepsy cohorts)
-     without losing numerical precision?"
-    — Dr. Khushbu Agarwal, Neurostars (Apr 2026)
-
-The answer has two parts:
+The numerical strategy utilizes two core principles:
 
 1. ALGORITHM: For infinite-horizon Gramians, we use the Bartels-Stewart algorithm
    implemented in scipy.linalg.solve_discrete_lyapunov. This algorithm internally
@@ -16,13 +13,13 @@ The answer has two parts:
    then solves the transformed Lyapunov equation in Schur coordinates — which is
    numerically stable because T is near-triangular and well-conditioned.
 
-   Complexity: O(N^3) in time, O(N^2) in memory — tractable for ADNI (N ≈ 300-400).
+   Complexity: O(N^3) in time, O(N^2) in memory — tractable for N ≈ 300-400.
 
 2. PREREQUISITE (the critical factor): Numerical precision of the Gramian is ONLY
    guaranteed when the spectral radius of A is strictly < 1. Without this, the
    Lyapunov equation has no unique positive semi-definite solution, and the Gramian
-   diverges. Our solvers (spectral_inversion_solver, mvar_solver) algebraically
-   enforce spectral radius < 1 BEFORE this function is ever called.
+   diverges. Our solvers explicitly enforce spectral radius < 1 BEFORE this 
+   function is ever called.
 
 This module exposes compute_gramian_large_scale(), which wraps the Lyapunov solve
 with explicit precision diagnostics, making numerical quality observable and
@@ -198,7 +195,7 @@ def compute_gramian_large_scale(A_norm, T=np.inf, B=None, system=None):
     Wc = (Wc + Wc.T) / 2.0
 
     # ------------------------------------------------------------------
-    # Step 4: Precision diagnostics — the key contribution for Q2.
+    # Step 4: Precision diagnostics.
     # ------------------------------------------------------------------
     precision_report = _compute_precision_report(
         Wc=Wc,

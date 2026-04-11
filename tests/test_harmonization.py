@@ -14,7 +14,7 @@ def rng():
 
 @pytest.fixture
 def hc_dataset(rng):
-    """Synthetic HC dataset with 2 scanners (site A: 40 subjects, site B: 40 subjects)."""
+    
     n_features = 100
     n_subjects = 80
     
@@ -26,7 +26,7 @@ def hc_dataset(rng):
 
 @pytest.fixture
 def clinical_dataset(rng):
-    """Synthetic clinical dataset from scanner_A only."""
+    
     n_features = 100
     n_subjects = 30
     data = rng.standard_normal((n_features, n_subjects)) + 0.5  
@@ -62,7 +62,7 @@ class TestFitCombat:
         assert params["gamma_hat"].shape == (2, 100)
 
     def test_delta_hat_all_positive(self, hc_dataset):
-        """Multiplicative batch effects must be positive (variance ratio)."""
+        
         data, labels = hc_dataset
         params = fit_combat(data, labels)
         assert np.all(params["delta_hat"] > 0)
@@ -139,7 +139,7 @@ class TestBlindHarmonize:
         assert "gamma_hat" in params
 
     def test_scanner_effect_reduced(self, rng):
-        """After harmonization, variance between scanners should decrease."""
+        
         n_features = 50
         n_per_site = 40
 

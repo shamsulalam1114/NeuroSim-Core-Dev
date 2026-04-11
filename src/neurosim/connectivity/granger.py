@@ -1,15 +1,12 @@
 """
 Granger Causality Testing for NeuroSim.
 
-This module directly addresses Dr. Agarwal's 'Approximation Crisis' challenge:
+This module provides a robust implementation for distinguishing between directed causality
+and simple functional correlation. It applies the mathematical foundation of the Multivariate 
+Autoregressive (MVAR) model to establish directed network graphs.
 
-    "How does the engine distinguish between directed causality and simple
-     functional correlation?"
-    — Dr. Khushbu Agarwal, Neurostars (Apr 2026)
-
-The answer lies in the mathematical foundation of the MVAR model. Granger causality
-(Granger, 1969) provides a rigorous statistical definition of directed causal
-influence that is fundamentally different from pairwise functional correlation:
+Granger causality (Granger, 1969) offers a rigorous statistical definition of directed causal
+influence that differs fundamentally from pairwise functional correlation:
 
     FC[i, j] = Pearson_corr(x_i(t), x_j(t))    ← instantaneous, symmetric, no directionality
 
@@ -26,9 +23,8 @@ Concretely, this is tested via a nested F-test on two OLS models:
 Under H0 (no causal influence of j on i): F ~ F(order, T - N*order - 1).
 If p < alpha, we reject H0 and conclude j Granger-causes i.
 
-This is NOT functional correlation. FC[i,j] can be high due to shared common
-inputs, while Granger(j→i) = 0. Conversely, two nodes with low FC can have
-strong directed Granger causality once network context is controlled for.
+This metric isolates directed physical/biological pathways, unlike functional correlation where
+FC[i,j] can be high due to shared common inputs while actual Granger(j→i) = 0.
 
 References:
     Granger, C.W.J. (1969). Investigating causal relations by econometric models
@@ -192,9 +188,9 @@ def granger_causality_matrix(timeseries, order=1, alpha=0.05):
 def causality_vs_correlation_summary(timeseries, order=1, alpha=0.05):
     """Compare Granger causality against functional correlation to expose their differences.
 
-    This is the diagnostic function that directly answers the 'Approximation Crisis':
-    it computes both FC (symmetric, no directionality) and Granger causality (directed,
-    conditional on network context) and identifies pairs where they disagree.
+    This diagnostic function evaluates the divergence between functional correlation 
+    (FC, symmetric, no directionality) and Granger causality (directed, conditional 
+    on network context) and identifies pairs in the network where they disagree.
 
     Disagreement cases reveal the failure modes of FC-based methods:
         - High FC, no Granger causality: common input / shared noise — spurious correlation
