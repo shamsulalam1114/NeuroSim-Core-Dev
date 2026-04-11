@@ -67,7 +67,7 @@ def mvar_solver(timeseries, order=1, regularization="ridge", alpha=1.0, system="
        
         A[i, :] = model.coef_[:n_nodes]
 
-    # Step 3: Post-hoc Schur stabilization if needed.
+    
     sr = _spectral_radius(A)
     if system == "discrete" and sr >= 1.0:
         warnings.warn(
@@ -89,7 +89,7 @@ def mvar_solver(timeseries, order=1, regularization="ridge", alpha=1.0, system="
         A = _normalize_for_stability(A, system=system)
         stabilization_applied = True
 
-    # Step 4: Diagnostics.
+    
     stability_info = _compute_stability_info(A, X, system, method=f"mvar_{regularization}")
     stability_info["stabilization_applied"] = stabilization_applied
 
