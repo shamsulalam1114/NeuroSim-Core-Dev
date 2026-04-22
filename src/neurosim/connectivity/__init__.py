@@ -5,6 +5,8 @@ from neurosim.connectivity.solver import (
     mvar_solver,
     check_schur_stability,
     normalize_matrix,
+    frobenius_recovery_benchmark,
+    eigenvalue_structure_report,
 )
 from neurosim.connectivity.granger import (
     granger_causality_matrix,
@@ -16,6 +18,8 @@ __all__ = [
     "mvar_solver",
     "check_schur_stability",
     "normalize_matrix",
+    "frobenius_recovery_benchmark",
+    "eigenvalue_structure_report",
     "granger_causality_matrix",
     "causality_vs_correlation_summary",
 ]

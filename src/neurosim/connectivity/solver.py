@@ -227,3 +227,62 @@ def _validate_regularization(regularization):
             f"Invalid regularization='{regularization}'. "
             f"Please specify either 'ridge' or 'lasso'."
         )
+
+
+def frobenius_recovery_benchmark(n_nodes=20, T_timepoints=500, seed=0, regularization="ridge"):
+    # Ground-truth recovery test: generate stable A_true, simulate linear dynamics,
+    # recover A_est via mvar_solver, report normalised Frobenius error.
+    # Ref: Seth et al. (2015, J.Neurosci) — identifiability of MVAR models.
+    rng = np.random.default_rng(seed=seed)
+
+    A_true = rng.standard_normal((n_nodes, n_nodes)) * 0.05
+    A_true = _normalize_for_stability(A_true, system="discrete")
+
+    # simulate x(t+1) = A_true @ x(t) + noise
+    noise_std = 0.1
+    X = np.zeros((n_nodes, T_timepoints))
+    X[:, 0] = rng.standard_normal(n_nodes)
+    for t in range(1, T_timepoints):
+        X[:, t] = A_true @ X[:, t - 1] + rng.standard_normal(n_nodes) * noise_std
+
+    A_est, stability_info = mvar_solver(
+        X, order=1, regularization=regularization, system="discrete"
+    )
+
+    frob_abs = float(np.linalg.norm(A_est - A_true, "fro"))
+    frob_norm = frob_abs / float(np.linalg.norm(A_true, "fro"))
+
+    return {
+        "frob_error_normalized": frob_norm,
+        "frob_error_absolute": frob_abs,
+        "A_true": A_true,
+        "A_est": A_est,
+        "sr_true": _spectral_radius(A_true),
+        "sr_est": _spectral_radius(A_est),
+        "stability_info": stability_info,
+        "n_nodes": n_nodes,
+        "T_timepoints": T_timepoints,
+    }
+
+
+def eigenvalue_structure_report(A_fc_derived, A_mvar_derived, imag_threshold=1e-8):
+    # Quantifies oscillatory mode preservation: FC-derived A is symmetric →
+    # real eigenvalues only. MVAR-derived A is asymmetric → complex eigenvalues
+    # encoding directed oscillatory dynamics. Ref: Gu et al. (2015, Nature Comm).
+    w_fc = np.linalg.eigvals(A_fc_derived)
+    w_mvar = np.linalg.eigvals(A_mvar_derived)
+
+    fc_complex_mask = np.abs(np.imag(w_fc)) > imag_threshold
+    mvar_complex_mask = np.abs(np.imag(w_mvar)) > imag_threshold
+
+    n = len(w_fc)
+
+    return {
+        "fc_complex_fraction": float(fc_complex_mask.sum()) / n,
+        "mvar_complex_fraction": float(mvar_complex_mask.sum()) / n,
+        "fc_eigenvalues": w_fc,
+        "mvar_eigenvalues": w_mvar,
+        "fc_spectral_radius": float(np.max(np.abs(w_fc))),
+        "mvar_spectral_radius": float(np.max(np.abs(w_mvar))),
+        "n_nodes": n,
+    }
