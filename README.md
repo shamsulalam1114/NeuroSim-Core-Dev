@@ -4,7 +4,7 @@
   <img src="https://img.shields.io/badge/GSoC-2026-orange?style=for-the-badge&logo=google" />
   <img src="https://img.shields.io/badge/INCF-Project%2039-005596?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Python-3.9%2B-blue?style=for-the-badge&logo=python" />
-  <img src="https://img.shields.io/badge/Tests-110%20passing-brightgreen?style=for-the-badge&logo=pytest" />
+  <img src="https://img.shields.io/badge/Tests-129%20passing-brightgreen?style=for-the-badge&logo=pytest" />
   <img src="https://img.shields.io/badge/License-Apache%202.0-green?style=for-the-badge" />
 </p>
 
@@ -15,7 +15,7 @@
 
 > **Mentor:** Dr. Khushbu Agarwal &nbsp;|&nbsp; **Author:** [Md. Shamsul Alam](https://github.com/shamsulalam1114) &nbsp;|&nbsp; **Timezone:** UTC+6 (Bangladesh)
 
-This repository is a fully working **Proof-of-Concept** for the NeuroSim proposal, demonstrating all three pipeline modules with **110 passing unit tests** and **4 executed Jupyter notebooks**. It directly addresses the two physics-constrained benchmark challenges raised during the INCF mentor review.
+This repository is a fully working **Proof-of-Concept** for the NeuroSim proposal, demonstrating all three pipeline modules with **129 passing unit tests** and **4 executed Jupyter notebooks**. It directly addresses the two physics-constrained benchmark challenges raised during the INCF mentor review.
 
 ---
 
@@ -99,10 +99,12 @@ neurosim/
 │   └── combat.py              # Blind neuroCombat: fit on HC, apply to clinical cohorts
 ├── connectivity/
 │   ├── solver.py              # Spectral Inversion + Regularized MVAR (Ridge/LassoLars)
-│   └── granger.py             # Granger causality F-test — causality vs correlation [NEW]
+│   │                          #   + frobenius_recovery_benchmark() [NEW]
+│   │                          #   + eigenvalue_structure_report()  [NEW]
+│   └── granger.py             # Granger causality F-test — causality vs correlation
 └── control/
     ├── gramian.py             # Controllability Gramian (discrete + continuous)
-    ├── gramian_schur.py       # Schur-based Gramian with precision diagnostics [NEW]
+    ├── gramian_schur.py       # Schur-based Gramian with precision diagnostics
     ├── energy.py              # Minimum-energy solver + optimal control path
     └── metrics.py             # Modal/Average Controllability, facilitator node ranking
 ```
@@ -196,14 +198,15 @@ print(f"Top gateway nodes: {top_nodes}")
 pytest tests/ -v --tb=short -m "not slow"
 ```
 
-| Test Module             | Tests   | Coverage                                           |
-| ----------------------- | ------- | -------------------------------------------------- |
-| `test_harmonization.py` | 11      | Blind ComBat fit/apply, scanner effect reduction   |
-| `test_connectivity.py`  | 25      | A-matrix stability, solvers, validators            |
-| `test_control.py`       | 26      | Gramian, energy, controllability, determinism      |
-| `test_granger.py`       | 24      | Granger F-test, causality detection, validators    |
-| `test_gramian_schur.py` | 23      | Schur Gramian, precision report, scaling benchmark |
-| **Total**               | **110** | **All passing ✅**                                 |
+| Test Module                    | Tests   | Coverage                                                  |
+| ------------------------------ | ------- | --------------------------------------------------------- |
+| `test_harmonization.py`        | 11      | Blind ComBat fit/apply, scanner effect reduction          |
+| `test_connectivity.py`         | 25      | A-matrix stability, solvers, validators                   |
+| `test_control.py`              | 26      | Gramian, energy, controllability, determinism             |
+| `test_granger.py`              | 24      | Granger F-test, causality detection, validators           |
+| `test_gramian_schur.py`        | 23      | Schur Gramian, precision report, scaling benchmark        |
+| `test_frobenius_recovery.py`   | 19      | Ground-truth recovery, eigenvalue structure, stabilization [NEW] |
+| **Total**                      | **129** | **All passing ✅**                                        |
 
 ---
 
@@ -222,18 +225,20 @@ All 4 notebooks have been executed end-to-end with saved outputs and plots:
 
 ## POC Deliverables Status
 
-| Deliverable                                         | Status      | File                       |
-| --------------------------------------------------- | ----------- | -------------------------- |
-| Blind neuroCombat harmonization                     | ✅ Complete | `harmonization/combat.py`  |
-| Spectral Inversion A-matrix solver                  | ✅ Complete | `connectivity/solver.py`   |
-| Regularized MVAR solver (Ridge/LassoLars)           | ✅ Complete | `connectivity/solver.py`   |
-| **Granger causality F-test validation**             | ✅ Complete | `connectivity/granger.py`  |
-| Controllability Gramian (finite + infinite)         | ✅ Complete | `control/gramian.py`       |
-| **Schur Gramian + precision diagnostics**           | ✅ Complete | `control/gramian_schur.py` |
-| Minimum-energy state transition solver              | ✅ Complete | `control/energy.py`        |
-| Modal/Average Controllability + facilitator ranking | ✅ Complete | `control/metrics.py`       |
-| Unit test suite (110 tests)                         | ✅ Complete | `tests/`                   |
-| Executed Jupyter notebooks (×4)                     | ✅ Complete | `notebooks/`               |
+| Deliverable                                         | Status      | File                            |
+| --------------------------------------------------- | ----------- | ------------------------------- |
+| Blind neuroCombat harmonization                     | ✅ Complete | `harmonization/combat.py`       |
+| Spectral Inversion A-matrix solver                  | ✅ Complete | `connectivity/solver.py`        |
+| Regularized MVAR solver (Ridge/LassoLars)           | ✅ Complete | `connectivity/solver.py`        |
+| **Granger causality F-test validation**             | ✅ Complete | `connectivity/granger.py`       |
+| **Frobenius ground-truth recovery benchmark**       | ✅ Complete | `connectivity/solver.py`        |
+| **Eigenvalue structure report (FC vs MVAR)**        | ✅ Complete | `connectivity/solver.py`        |
+| Controllability Gramian (finite + infinite)         | ✅ Complete | `control/gramian.py`            |
+| **Schur Gramian + precision diagnostics**           | ✅ Complete | `control/gramian_schur.py`      |
+| Minimum-energy state transition solver              | ✅ Complete | `control/energy.py`             |
+| Modal/Average Controllability + facilitator ranking | ✅ Complete | `control/metrics.py`            |
+| Unit test suite (129 tests)                         | ✅ Complete | `tests/`                        |
+| Executed Jupyter notebooks (×4)                     | ✅ Complete | `notebooks/`                    |
 
 ---
 
