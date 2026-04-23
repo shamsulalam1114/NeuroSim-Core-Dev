@@ -21,7 +21,6 @@ def clean_timeseries(ts, detrend=True, standardize=True):
         T = ts.shape[1]
         t = np.arange(T, dtype=float)
         t -= t.mean()
-        # slope per node
         slope = (ts @ t) / (t @ t)
         ts = ts - np.outer(slope, t)
     if standardize:
