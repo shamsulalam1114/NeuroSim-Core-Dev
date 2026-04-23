@@ -1,11 +1,7 @@
 
 import numpy as np
 
-from neurosim.connectivity.solver import (
-    mvar_solver,
-    _normalize_for_stability,
-    _spectral_radius,
-)
+from neurosim.connectivity.solver import mvar_solver
 
 
 def _sigmoid(x):
