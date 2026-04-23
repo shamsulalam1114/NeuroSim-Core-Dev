@@ -16,6 +16,10 @@ from neurosim.connectivity.graphnet import (
     graphnet_mvar_solver,
     build_laplacian,
 )
+from neurosim.connectivity.wilson_cowan import (
+    wilson_cowan_simulate,
+    wc_mvar_validation,
+)
 
 __all__ = [
     "spectral_inversion_solver",
@@ -28,4 +32,6 @@ __all__ = [
     "causality_vs_correlation_summary",
     "graphnet_mvar_solver",
     "build_laplacian",
+    "wilson_cowan_simulate",
+    "wc_mvar_validation",
 ]
