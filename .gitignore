@@ -52,3 +52,7 @@ run_check.py
 
 # Installed package info
 src/neurosim.egg-info/
+
+# Demo script runtime output
+output_plots/
+run_tests_output.txt
