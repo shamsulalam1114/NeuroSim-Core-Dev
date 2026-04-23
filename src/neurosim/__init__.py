@@ -6,6 +6,7 @@ __license__ = "Apache 2.0"
 from neurosim.connectivity import solver as connectivity
 from neurosim.control import gramian, energy, metrics
 from neurosim.harmonization import combat
+from neurosim.ingestion import bids_loader, parcellation, signal_cleaning
 
 __all__ = [
     "connectivity",
@@ -13,4 +14,7 @@ __all__ = [
     "energy",
     "metrics",
     "combat",
+    "bids_loader",
+    "parcellation",
+    "signal_cleaning",
 ]
