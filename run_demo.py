@@ -43,7 +43,7 @@ print("  GSoC 2026 Project #39 -- INCF / EBRAINS / NBRC")
 print("=" * 60)
 
 
-# ── Module A: Harmonization ───────────────────────────────────────
+# Module A: Harmonization
 print("\n[A] Blind neuroCombat Harmonization")
 
 hc_A = RNG.standard_normal((N, 60))
@@ -75,7 +75,7 @@ plt.close()
 print(f"    plot -> {OUT}/module_A_harmonization.png")
 
 
-# ── Module B1: Effective Connectivity ─────────────────────────────
+# Module B1: Effective Connectivity
 print("\n[B1] Effective Connectivity -- FC vs MVAR")
 
 fc = np.corrcoef(hc_data)
@@ -113,7 +113,7 @@ plt.close()
 print(f"    plot -> {OUT}/module_B1_a_matrix.png")
 
 
-# ── Module B2: Control Energy ──────────────────────────────────────
+# Module B2: Control Energy
 print("\n[B2] Network Control Theory -- Gramian + State Transitions")
 
 A_norm = normalize_matrix(A_mvar, system="discrete")
@@ -150,7 +150,7 @@ plt.close()
 print(f"    plot -> {OUT}/module_B2_energy.png")
 
 
-# ── Module C: Ingestion + Signal QC ───────────────────────────────
+# Module C: Ingestion + Signal QC
 print("\n[C] BIDS Ingestion -- Signal Cleaning + tSNR QC")
 
 import pandas as pd
