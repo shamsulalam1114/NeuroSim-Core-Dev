@@ -29,9 +29,7 @@ def build_laplacian(n_nodes, A_fc=None):
 
 def graphnet_mvar_solver(timeseries, order=1, lambda1=0.1, lambda2=0.1,
                          L=None, system="discrete", max_iter=500, tol=1e-6):
-    # GraphNet MVAR: L1 sparsity + graph Laplacian smoothness on connectivity weights.
-    # Solved per-node via proximal gradient (ISTA) on the combined objective:
-    #   min ||y - X a||^2 + lambda1 ||a||_1 + lambda2 a^T L a
+    # proximal gradient (ISTA) per node: min ||y - X a||^2 + lambda1 ||a||_1 + lambda2 a^T L a
     # Ref: Grosenick et al. (2013, NeuroImage); Varoquaux et al. (2010, NIPS)
     _validate_timeseries(timeseries, order)
     _validate_system(system)
