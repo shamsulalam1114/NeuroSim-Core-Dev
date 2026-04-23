@@ -110,8 +110,7 @@ class TestEigenvalueStructureReport:
         assert 0.0 <= report["mvar_complex_fraction"] <= 1.0
 
     def test_fc_derived_has_fewer_complex_eigenvalues_than_mvar(self, fc_and_mvar_pair):
-        # FC-derived A inherits near-symmetry → mostly real eigenvalues.
-        # MVAR breaks symmetry → complex eigenvalues encoding oscillatory modes.
+        # FC symmetry collapses oscillatory modes; MVAR asymmetry preserves them
         A_fc, A_mvar = fc_and_mvar_pair
         report = eigenvalue_structure_report(A_fc, A_mvar)
         assert report["mvar_complex_fraction"] >= report["fc_complex_fraction"], (
@@ -172,7 +171,6 @@ class TestSchurStabilizationStructure:
         )
 
     def test_frobenius_error_with_stabilized_A(self, rng):
-        # verify that Frobenius error is meaningful even after post-hoc stabilization
         result = frobenius_recovery_benchmark(n_nodes=15, T_timepoints=600, seed=11)
         # if stabilization was applied and distorted A_est, error would be >> 1
         assert result["frob_error_normalized"] < 2.0, (

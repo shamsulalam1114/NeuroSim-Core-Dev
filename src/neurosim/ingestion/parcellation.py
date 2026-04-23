@@ -60,8 +60,6 @@ def extract_regional_timeseries(bold_img, atlas, confounds_df=None,
 
 
 def build_synthetic_timeseries(n_nodes=20, T_timepoints=500, seed=0, noise_std=0.1):
-    # Generates synthetic BOLD-like timeseries via stable linear dynamics.
-    # Used for unit testing and offline benchmarking without real neuroimaging data.
     # Ref: Gu et al. (2015, Nature Comm) — linear network control model.
     from neurosim.connectivity.solver import mvar_solver, _normalize_for_stability
 
